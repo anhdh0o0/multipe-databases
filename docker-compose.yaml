@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+
+  mysql-dev:
+    image: mysql:8.0.2
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: blogapp
+    ports:
+      - "3308:3306"
+    volumes:
+      - "/docker/mysql/conf:/etc/mysql/conf.d/config-file.cnf"
+      - "/docker/mysql/data:/var/lib/mysql:rw"
+
+  mysql-legacy:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: legacyapp
+    ports:
+      - "3309:3306"
+
+  pgdb:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blogapp
+    volumes:
+      - /docker/postgre/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+    container_name: mssql
+    volumes:
+      - /docker/mssql/data:/var/opt/mssql
+    environment:
+      - SA_PASSWORD=AdHocTuts2019@
+      - ACCEPT_EULA=Y
+      - TZ=Asia/Baku
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+
+# https://hub.docker.com/_/oracle-database-enterprise-edition
+# Accept Terms of Service for Oracle Database Enterprise Edition (Proceed to Checkout).
+# Then in command line: docker login
+
+# https://hub.docker.com/_/mongo
+  mongo:
+    image: mongo:3.4.21-xenial
+    container_name: mongo
+    volumes:
+      - /docker/mongo/data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=AdHocTuts2019@
+    ports:
+      - "27017:27017"
+
+  admin:
+    image: adminer
+    ports:
+      - 8080:8080
